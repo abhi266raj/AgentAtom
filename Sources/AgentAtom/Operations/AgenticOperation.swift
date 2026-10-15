@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// Copyright (C) 2026 Abhiraj.
+
+public actor AgenticOperation<Specification: Spec, Session: AgenticSessionProtocol>: AgenticOperationProtocol, OperationLifecycle {
+    public typealias Result = Swift.Result<String, AgenticError>
+
+    public let spec: Specification
+    public internal(set) var state: OperationState = .ready
+    let session: Session
+    let strategy = JSONOperationStrategy()
+    var task: Task<Swift.Result<String, AgenticError>, Never>?
+
+    public init(spec: Specification, session: Session) {
+        self.spec = spec
+        self.session = session
+    }
+
+    public func execute() async -> Result {
+        await start()
+    }
+}

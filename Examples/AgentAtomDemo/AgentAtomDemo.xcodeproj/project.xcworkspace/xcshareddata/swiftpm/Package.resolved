@@ -1,0 +1,15 @@
+{
+  "originHash" : "a6565dc279235616db90f809aebe4aa309ab37ac9b296ec35fc8486fd2a50022",
+  "pins" : [
+    {
+      "identity" : "typedecoder",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Kitura/TypeDecoder.git",
+      "state" : {
+        "revision" : "fd1e4909a065e9ca083c9dd01048d8070c9cefdd",
+        "version" : "2.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}

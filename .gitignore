@@ -1,0 +1,13 @@
+.build/
+.swiftpm/
+.worktrees/
+DerivedData/
+build/
+.DS_Store
+xcuserdata/
+*.xcuserstate
+.env
+.env.*
+*.log
+*.profraw
+*.profdata

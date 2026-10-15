@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: macos-26
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Toolchain
+        run: swift --version && xcodebuild -version
+      - name: Resolve
+        run: swift package resolve
+      - name: Build library
+        run: swift build
+      - name: Deterministic tests
+        run: swift test
+      - name: Build macOS example
+        run: >-
+          xcodebuild -project Examples/AgentAtomDemo/AgentAtomDemo.xcodeproj
+          -scheme AgentAtomDemo -destination 'generic/platform=macOS'
+          -derivedDataPath .build/example CODE_SIGNING_ALLOWED=NO build
