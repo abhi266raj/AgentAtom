@@ -13,7 +13,7 @@ cat > "$consumer/Package.swift" <<SWIFT
 import PackageDescription
 let package = Package(
     name: "PlatformConsumer",
-    platforms: [.macOS(.v14), .iOS(.v16), .tvOS(.v16), .watchOS(.v9), .visionOS(.v1)],
+    platforms: [.macOS(.v14), .iOS(.v16)],
     products: [.library(name: "PlatformConsumer", targets: ["Consumer"])],
     dependencies: [.package(path: "$root")],
     targets: [.target(name: "Consumer", dependencies: [.product(name: "AgentAtom", package: "$identity")])],
@@ -32,8 +32,8 @@ public struct Example: ModelledSpec {
     public init() {}
 }
 public func schema() -> String { Example.outputSchema.rawValue }
-#if os(macOS) || os(iOS) || os(visionOS)
-@available(macOS 26, iOS 26, visionOS 26, *)
+#if os(macOS) || os(iOS)
+@available(macOS 26, iOS 26, *)
 public func appleSession() -> AppleIntelligenceSession? { AppleIntelligenceSession() }
 #endif
 SWIFT
@@ -44,17 +44,11 @@ while read -r sdk triple; do
         macosx) destination='generic/platform=macOS' ;;
         iphoneos) destination='generic/platform=iOS' ;;
         iphonesimulator) destination='generic/platform=iOS Simulator' ;;
-        appletvos) destination='generic/platform=tvOS' ;;
-        appletvsimulator) destination='generic/platform=tvOS Simulator' ;;
-        watchos) destination='generic/platform=watchOS' ;;
-        watchsimulator) destination='generic/platform=watchOS Simulator' ;;
-        xros) destination='generic/platform=visionOS' ;;
-        xrsimulator) destination='generic/platform=visionOS Simulator' ;;
         *) exit 1 ;;
     esac
     printf 'Compiling binary consumer with Xcode: %s\n' "$triple"
     (cd "$consumer" && xcodebuild -scheme PlatformConsumer -configuration Debug \
-        -destination "$destination" -arch "$architecture" \
+        -destination "$destination" ARCHS="$architecture" ONLY_ACTIVE_ARCH=NO \
         -derivedDataPath "$consumer/DerivedData" CODE_SIGNING_ALLOWED=NO build) \
         > "$consumer/$triple.log" 2>&1 || {
             tail -80 "$consumer/$triple.log" >&2

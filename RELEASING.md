@@ -15,7 +15,7 @@ leading zeroes, malformed versions, and prerelease suffixes fail validation.
 
 When the owner merges a version increase into main, CI automatically:
 
-1. Builds all nine XCFramework destinations with library evolution and @rpath,
+1. Builds the three Mac/iPhone XCFramework destinations with library evolution and @rpath,
    using the same sources as AgentAtomSource, and records toolchain/source SHA.
 2. Runs the deterministic source suite, isolated public consumer tests for both
    products, binary compilation across the shipped architectures, and demo build.

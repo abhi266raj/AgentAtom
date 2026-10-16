@@ -4,7 +4,7 @@
 
 - Recommended AgentAtom XCFramework product and optional AgentAtomSource product
   from the same repository and version. Source imports become AgentAtomSource.
-- All declared Apple platforms, with device/simulator slices and module interfaces.
+- Mac and iPhone support, with device/simulator slices and module interfaces.
 - One shared implementation, embedded TypeDecoder, and packaged license notices.
 - Binary-backed macOS demo, isolated consumer checks, and artifact release tooling.
 - Main is the only integration branch. Version increases trigger verified

@@ -42,8 +42,8 @@ are the same, but the modules define distinct Swift types: choose one product fo
 each dependency graph; do not mix values between them. SwiftPM has no automatic
 default product; this guide and the example recommend the binary product.
 
-The XCFramework contains macOS (Apple silicon and Intel), iOS, tvOS, watchOS, and
-visionOS device/simulator slices. It includes public Swift module interfaces,
+The XCFramework supports Mac (Apple silicon and Intel) and iPhone, including
+iOS device and simulator slices. It includes public Swift module interfaces,
 with TypeDecoder linked into the framework. App consumers must embed and sign the
 dynamic framework; Xcode handles this when the package product is added to the app.
 The package downloads the archive from GitHub Releases and verifies its SHA-256.
@@ -59,8 +59,8 @@ clients must explicitly select and import `AgentAtomSource`. See
 
 ## Requirements
 
-- Source: Swift 6.0+. Binary: Xcode 26.6+ (CI-validated baseline). Package deployment targets: macOS 14, iOS/tvOS 16, watchOS 9, visionOS 1.
-- The Apple provider requires Xcode/SDK 26+ and macOS/iOS/visionOS 26+, with
+- Source: Swift 6.0+. Binary: Xcode 26.6+ (CI-validated baseline). Package deployment targets: macOS 14 and iOS 16 (iPhone).
+- The Apple provider requires Xcode/SDK 26+ and macOS/iOS 26+, with
   Apple Intelligence supported, enabled, downloaded, and available.
 - The provider is excluded when FoundationModels or a supported platform is absent.
   Declared deployment targets do not imply the Apple model runs on older systems.
@@ -134,8 +134,8 @@ struct SummarySpec: ModelledSpec {
     var output: SummaryOutput?
 }
 
-#if canImport(FoundationModels) && (os(macOS) || os(iOS) || os(visionOS))
-@available(macOS 26, iOS 26, visionOS 26, *)
+#if canImport(FoundationModels) && (os(macOS) || os(iOS))
+@available(macOS 26, iOS 26, *)
 func summarize() async throws -> SummaryOutput? {
     guard let session = AppleIntelligenceSession() else { return nil }
     let spec = SummarySpec(input: "Asha opened a library. Ben donated books. Mira hosted a reading.")
@@ -173,7 +173,7 @@ native guided generation and returns `GeneratedContent.jsonString`. Shape enforc
 does not guarantee factual correctness or compliance with semantic instructions.
 
 ```swift
-if #available(macOS 26, iOS 26, visionOS 26, *) {
+if #available(macOS 26, iOS 26, *) {
     guard let session = AppleIntelligenceSession(configuration: .init(
         metadata: [.duration, .modelIdentifier]
     )) else {
@@ -282,7 +282,7 @@ Streaming checks the caller before launching its independent producer; provider
 stream cancellation and consumer termination handle the active run without snapshot polling.
 
 `AppleIntelligenceSession` is a final Sendable class, compiled only where FoundationModels is supported
-and is available on macOS/iOS/visionOS 26+. Its failable initializer checks device,
+and is available on macOS/iOS 26+. Its failable initializer checks device,
 settings, and model readiness once. It uses `SystemLanguageModel.default` and one
 file-level platform guard. The package retains its older deployment minimums.
 

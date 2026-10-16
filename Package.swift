@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "AgentAtom",
-    platforms: [.macOS(.v14), .iOS(.v16), .tvOS(.v16), .watchOS(.v9), .visionOS(.v1)],
+    platforms: [.macOS(.v14), .iOS(.v16)],
     products: [
         .library(name: "AgentAtom", targets: ["AgentAtom"]),
         .library(name: "AgentAtomSource", targets: ["AgentAtomSource"])

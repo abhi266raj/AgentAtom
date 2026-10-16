@@ -20,8 +20,8 @@ AgentAtom $version XCFramework artifact.
 Corresponding source commit: $source_commit (merged main).
 SHA-256: $checksum
 
-Deployment targets: macOS 14, iOS/tvOS 16, watchOS 9, visionOS 1.
-Nine platform variants, including device/simulator architectures.
+Deployment targets: macOS 14 and iOS 16 (iPhone).
+Three variants: universal Mac, iPhone device, and iOS Simulator.
 AGPL-3.0-only; TypeDecoder 2.0.0 is statically linked under Apache-2.0.
 
 Toolchain:
@@ -74,7 +74,7 @@ Binary SHA-256: $checksum
 
 See the artifact's toolchain.txt for the validated Xcode/Swift toolchain.
 The source product requires Swift 6.0+ (Xcode 26+ for Apple Intelligence).
-The Apple provider runs only on supported macOS/iOS/visionOS 26+ systems.
+The Apple provider runs only on supported macOS/iOS 26+ systems.
 Both variants remain AGPL-3.0-only. Choose one product per dependency graph.
 0.0.1 remains source-only; source clients upgrading must import AgentAtomSource.
 The tag includes a generated manifest commit whose parent is the merged source;

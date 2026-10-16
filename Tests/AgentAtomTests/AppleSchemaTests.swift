@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2026 Abhiraj.
 
-#if canImport(FoundationModels) && (os(macOS) || os(iOS) || os(visionOS))
+#if canImport(FoundationModels) && (os(macOS) || os(iOS))
 @testable import AgentAtomSource
 import Foundation
 import FoundationModels
@@ -10,7 +10,7 @@ import Testing
 struct AppleSchemaTests {
     @Test
     func nativeSchemaPreservesRequiredFieldsWithoutChangingSpec() throws {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let original = KeyPointsSpec.outputSchema.rawValue
             let schema = try #require(JSONString(original))
             let native = try AppleIntelligenceSession.generationSchema(from: schema)
@@ -25,7 +25,7 @@ struct AppleSchemaTests {
 
     @Test
     func failureAlternativeKeepsDiscriminators() throws {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let schema = try FailableOperationStrategy().schema(for: KeyPointsSpec.outputSchema)
             let native = try AppleIntelligenceSession.generationSchema(from: schema)
             let object = try json(native)
@@ -43,7 +43,7 @@ struct AppleSchemaTests {
 
     @Test
     func nestedCollectionsAndNullableProperties() throws {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let derived = try #require(JSONSchema(Nested.self))
             let schema = try #require(JSONString(derived.rawValue))
             let object = try json(AppleIntelligenceSession.generationSchema(from: schema))
@@ -56,7 +56,7 @@ struct AppleSchemaTests {
 
     @Test
     func emptyObjectAndDictionarySchemas() throws {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             for schema in [JSONSchema(Empty.self), JSONSchema([String: String].self)] {
                 let derived = try #require(schema)
                 let value = try #require(JSONString(derived.rawValue))
@@ -67,7 +67,7 @@ struct AppleSchemaTests {
 
     @Test(arguments: ["format", "contentEncoding"])
     func unsupportedConstraintsFailInsteadOfDisappearing(key: String) throws {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let data = try JSONSerialization.data(withJSONObject: ["type": "string", key: "unsupported"])
             let schema = try #require(JSONString(String(decoding: data, as: UTF8.self)))
             #expect(throws: AgenticError.operationFailed(reason: "Apple guided generation does not support schema constraint: \(key).")) {
@@ -78,7 +78,7 @@ struct AppleSchemaTests {
 
     @Test
     func numericEnumsCannotSilentlyLoseTheirConstraint() throws {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let schema: JSONString = #"{"type":"integer","enum":[422]}"#
             #expect(throws: AgenticError.operationFailed(reason: "Apple guided generation supports enum constraints only for strings.")) {
                 try AppleIntelligenceSession.generationSchema(from: schema)
@@ -86,7 +86,7 @@ struct AppleSchemaTests {
         }
     }
 
-    @available(macOS 26, iOS 26, visionOS 26, *)
+    @available(macOS 26, iOS 26, *)
     private func json(_ schema: GenerationSchema) throws -> [String: Any] {
         try #require(JSONSerialization.jsonObject(with: JSONEncoder().encode(schema)) as? [String: Any])
     }

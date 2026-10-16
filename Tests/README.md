@@ -56,7 +56,7 @@ fence stripping, fake live results, or additional executable product is used.
 AGENTATOM_LIVE_TESTS=1 swift test --filter AppleKeyPointsTests
 ```
 
-Live tests require macOS/iOS/visionOS 26+ and an available local Apple model. Model
+Live tests require macOS/iOS 26+ and an available local Apple model. Model
 checks are skipped when unavailable; a separate test reports availability and checks
 the failable initializer. Regular tests do not invoke a model or network service.
 
@@ -71,7 +71,6 @@ Historical validation of the imported implementation on macOS 27.0.1, Xcode 27.0
 | Live streaming sample | Passed direct final JSON decoding and expected points/names |
 | Unsupported Apple schema | Failed before admission with diagnostic error and no execution record, as expected |
 | iOS simulator target, deployment 16 | AgentAtom library build passed with SDK 27 |
-| tvOS simulator target, deployment 16 | AgentAtom library build passed with Apple provider excluded, SDK 27 |
 
 The full live run enables all 54 test functions; parameterized cases are additional.
 The original prompt-only adapter produced fenced JSON and invalid partial successes. The current implementation uses native

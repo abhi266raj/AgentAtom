@@ -6,8 +6,8 @@ root="$PWD"
 output="$root/.build/distribution"
 mkdir -p "$output"
 frameworks=()
-labels=(macos ios ios-simulator tvos tvos-simulator watchos watchos-simulator visionos visionos-simulator)
-destinations=('generic/platform=macOS' 'generic/platform=iOS' 'generic/platform=iOS Simulator' 'generic/platform=tvOS' 'generic/platform=tvOS Simulator' 'generic/platform=watchOS' 'generic/platform=watchOS Simulator' 'generic/platform=visionOS' 'generic/platform=visionOS Simulator')
+labels=(macos ios ios-simulator)
+destinations=('generic/platform=macOS' 'generic/platform=iOS' 'generic/platform=iOS Simulator')
 for index in "${!labels[@]}"; do
     label="${labels[$index]}"
     printf 'Archiving %s\n' "$label"

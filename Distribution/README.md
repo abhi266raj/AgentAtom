@@ -9,7 +9,7 @@ identities. Both remain AGPL-3.0-only and the source repository remains public.
 
 ## Build and verify a development checkout
 
-Use Xcode 26.6+ with all five platform SDKs installed. The source product requires
+Use Xcode 26.6+ with macOS and iOS platform SDKs installed. The source product requires
 Swift 6.0+; its Apple provider additionally requires the FoundationModels SDK from
 Xcode 26+. The binary baseline is verified by CI and recorded with each artifact.
 
@@ -30,8 +30,7 @@ Build the framework first: development manifests use the local artifact under
 an immutable GitHub archive URL and checksum, generated automatically by CI.
 Consumers selecting a published tag need no local artifact-generation step.
 
-The build script archives universal macOS and device/simulator variants for iOS,
-tvOS, watchOS, and visionOS. It produces AgentAtom.xcframework.zip and checksum.txt
+The build script archives universal macOS and iPhone device/iOS Simulator variants. It produces AgentAtom.xcframework.zip and checksum.txt
 under `.build/distribution`, alongside intermediate archives and logs. Library
 evolution emits public module interfaces. TypeDecoder 2.0.0 is linked statically
 and is absent from the public interface; consumers need no TypeDecoder module to
@@ -47,7 +46,7 @@ FailureProbe consumer includes this executable-specific setting.
 `verify-products.sh` creates isolated consumers and tests the same public
 contracts against each product. Internal instruction tests stay in the normal
 source suite. Live model tests are opt-in. `verify-platforms.sh` discovers and
-checks all nine platform slices, then compiles a binary consumer for every
+checks all three platform slices, then compiles a binary consumer for every
 architecture in the archive, including an available Apple provider reference.
 
 ## Automatic publication
