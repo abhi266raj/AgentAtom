@@ -47,5 +47,9 @@ private actor RejectingOperation: AgenticOperationProtocol, OperationLifecycle {
     var task: Task<Result, Never>?
 
     init(session: TestSession) { self.session = session }
+    func instructions() throws(AgenticError) -> String { try lifecycleInstructions() }
+    func cancel() { cancelRun() }
+    func pause() async throws(AgenticError) { try await pauseRun() }
+    func resume() async throws(AgenticError) { try await resumeRun() }
     func execute() async -> Result { await start() }
 }

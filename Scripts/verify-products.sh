@@ -4,6 +4,14 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 root="$PWD"
+version="${1:-}"
+identity="$(basename "$root" | tr '[:upper:]' '[:lower:]')"
+dependency=".package(path: \"$root\")"
+if [ -n "$version" ]; then
+    swift Scripts/Release.swift compare "$version" 0.0.0 > /dev/null
+    dependency=".package(url: \"https://github.com/abhi266raj/AgentAtom.git\", exact: \"$version\")"
+    identity=agentatom
+fi
 for product in AgentAtom AgentAtomSource; do
     consumer="$(mktemp -d "${TMPDIR:-/tmp}/agentatom-consumer.XXXXXX")"
     trap 'rm -rf "$consumer"' EXIT
@@ -23,17 +31,14 @@ import PackageDescription
 let package = Package(
     name: "DistributionConsumer",
     platforms: [.macOS(.v14)],
-    dependencies: [.package(path: "$root")],
+    dependencies: [$dependency],
     targets: [
-        .executableTarget(name: "FailureProbe", dependencies: [.product(name: "$product", package: "AgentAtom-publication")], path: "Tests/FailureProbe", linkerSettings: [.unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path"])]),
-        .testTarget(name: "AgentAtomTests", dependencies: [.product(name: "$product", package: "AgentAtom-publication"), "FailureProbe"])
+        .executableTarget(name: "FailureProbe", dependencies: [.product(name: "$product", package: "$identity")], path: "Tests/FailureProbe", linkerSettings: [.unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path"])]),
+        .testTarget(name: "AgentAtomTests", dependencies: [.product(name: "$product", package: "$identity"), "FailureProbe"])
     ],
     swiftLanguageModes: [.v6]
 )
 SWIFT
-    # A local dependency's identity is the checkout directory, not its package name.
-    identity="$(basename "$root" | tr '[:upper:]' '[:lower:]')"
-    sed -i '' "s/AgentAtom-publication/$identity/g" "$consumer/Package.swift"
     printf 'Testing %s from a separate consumer\n' "$product"
     swift test --package-path "$consumer"
     rm -rf "$consumer"

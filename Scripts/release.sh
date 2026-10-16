@@ -57,6 +57,7 @@ else
         -c tag.gpgsign=false tag -a "$version" -m "AgentAtom $version"
     git push origin "refs/tags/$version"
 fi
+Scripts/verify-products.sh "$version"
 if gh release view "$version" --repo "$repo" > /dev/null 2>&1; then
     printf 'Release %s already published; nothing to replace.\n' "$version"
     exit 0
