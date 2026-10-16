@@ -4,6 +4,7 @@ Run deterministic tests from the repository root:
 
 ```sh
 swift test
+Scripts/verify-products.sh
 ```
 
 The fixture session is test-only. Its synchronization gates control admission,
@@ -17,6 +18,12 @@ identity, overlapping calls, concurrent metadata reads, cancellation cleanup,
 stream termination and reference release, lifecycle capabilities, stale responses,
 and configuration bounds. Only instruction-failure/schema and native adapter tests use
 `@testable`; normal operation tests consume the public API.
+
+The root suite exercises **AgentAtomSource**, including internal contracts.
+`Scripts/verify-products.sh` runs public contracts in separate consumer packages
+against **AgentAtom** (downloaded XCFramework) and **AgentAtomSource**. These
+consumer tests use ordinary imports, with no test access to binary internals.
+Both variants must pass. The macOS demo exercises the binary product.
 
 ## KeyPoints sample
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2026 Abhiraj.
 
-import AgentAtom
+import AgentAtomSource
 
 struct KeyPointsOutput: Decodable, Sendable, Equatable {
     let points: [String]

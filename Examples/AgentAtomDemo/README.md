@@ -12,7 +12,10 @@ on a supported Mac and wait for model downloads. No API key or server is needed.
 
 Open `AgentAtomDemo.xcodeproj` in Xcode, select the **AgentAtomDemo** scheme and
 **My Mac**, then Run. The project references AgentAtom at the repository root,
-so clone the complete repository before opening it.
+so clone the complete repository before opening it. It selects the recommended
+binary **AgentAtom** product, downloaded and checksum-verified by SwiftPM.
+The app embeds the dynamic framework. To experiment with the source variant,
+select **AgentAtomSource** instead and change imports to `import AgentAtomSource`.
 
 Use the supplied sample, or enter at least three distinct facts. Choose Generate.
 Try a greeting to see a model-declared failure. Cancel waits for provider cleanup;
@@ -30,7 +33,7 @@ xcodebuild -project Examples/AgentAtomDemo/AgentAtomDemo.xcodeproj \
 ```
 
 This builds an unsigned local demonstration app; it is not a notarized release.
-For your own project, use the remote package URL and exact version `0.0.1` as
+For your own project, use the remote package URL and exact version `0.1.0` as
 shown in the root README. The example app and package use AGPL-3.0-only.
 
 ## Failure details

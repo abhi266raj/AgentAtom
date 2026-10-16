@@ -11,7 +11,7 @@ jobs:
   build-and-test:
     name: Build and test
     runs-on: macos-26
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: Toolchain
@@ -22,8 +22,31 @@ jobs:
         run: swift build
       - name: Deterministic tests
         run: swift test
+      - name: Test both products as external consumers
+        run: Scripts/verify-products.sh
+      - name: Compile binary consumers across Apple platforms
+        run: Scripts/verify-platforms.sh
       - name: Build macOS example
         run: >-
           xcodebuild -project Examples/AgentAtomDemo/AgentAtomDemo.xcodeproj
           -scheme AgentAtomDemo -destination 'generic/platform=macOS'
           -derivedDataPath .build/example CODE_SIGNING_ALLOWED=NO build
+  framework:
+    name: Archive XCFramework
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Record toolchain
+        run: |
+          mkdir -p .build/distribution
+          (xcodebuild -version; swift --version; git rev-parse HEAD) > .build/distribution/toolchain.txt
+      - name: Archive all platforms
+        run: Scripts/build-xcframework.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AgentAtom-XCFramework
+          path: |
+            .build/distribution/AgentAtom.xcframework.zip
+            .build/distribution/checksum.txt
+            .build/distribution/toolchain.txt

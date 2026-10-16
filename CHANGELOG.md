@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0 (unreleased)
+
+- Recommended AgentAtom XCFramework product and optional AgentAtomSource product
+  from the same repository and version. Source imports become AgentAtomSource.
+- All declared Apple platforms, with device/simulator slices and module interfaces.
+- One shared implementation, embedded TypeDecoder, and packaged license notices.
+- Binary-backed macOS demo, isolated consumer checks, and artifact release tooling.
+- Existing 0.0.1 tag and source-only product remain unchanged.
+
 ## 0.0.1
 
 Initial standalone release under `abhi266raj/AgentAtom`.

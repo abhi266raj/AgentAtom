@@ -2,7 +2,7 @@
 // Copyright (C) 2026 Abhiraj.
 
 #if os(macOS) || os(Linux)
-@testable import AgentAtom
+@testable import AgentAtomSource
 import Foundation
 import Testing
 

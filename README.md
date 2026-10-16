@@ -9,11 +9,11 @@ Swift specifications, reusable operations, and injected sessions.
 ## Install with Swift Package Manager
 
 Add `https://github.com/abhi266raj/AgentAtom.git` in Xcode's package dependencies,
-and select **Exact Version: 0.0.1**. Add the **AgentAtom** product to your target.
+and select **Exact Version: 0.1.0**. Add the **AgentAtom** product to your target for the recommended precompiled XCFramework.
 For a Swift package manifest:
 
 ```swift
-.package(url: "https://github.com/abhi266raj/AgentAtom.git", exact: "0.0.1")
+.package(url: "https://github.com/abhi266raj/AgentAtom.git", exact: "0.1.0")
 ```
 
 Use this product dependency in your target:
@@ -22,7 +22,40 @@ Use this product dependency in your target:
 .product(name: "AgentAtom", package: "AgentAtom")
 ```
 
-The Git tag `0.0.1` is the SwiftPM release; no central registry account is required.
+### Choose binary or source
+
+Both products come from the same repository URL and version `0.1.0`:
+
+| Product | Distribution | Import |
+| --- | --- | --- |
+| **AgentAtom** (recommended) | Precompiled dynamic XCFramework | `import AgentAtom` |
+| **AgentAtomSource** | Compiles the same implementation from source | `import AgentAtomSource` |
+
+For source builds, select **AgentAtomSource** in Xcode, or use:
+
+```swift
+.product(name: "AgentAtomSource", package: "AgentAtom")
+```
+
+Change your imports to `import AgentAtomSource`. The API declarations and behavior
+are the same, but the modules define distinct Swift types: choose one product for
+each dependency graph; do not mix values between them. SwiftPM has no automatic
+default product; this guide and the example recommend the binary product.
+
+The XCFramework contains macOS (Apple silicon and Intel), iOS, tvOS, watchOS, and
+visionOS device/simulator slices. It includes public Swift module interfaces,
+with TypeDecoder linked into the framework. App consumers must embed and sign the
+dynamic framework; Xcode handles this when the package product is added to the app.
+The package downloads the archive from GitHub Releases and verifies its SHA-256.
+
+Both variants remain AGPL-3.0-only. Choosing binary distribution does not hide the
+source in this public repository or change the license. SwiftPM may still fetch
+repository sources and resolve declared dependencies for either product.
+
+Version `0.0.1` remains the original source-only `AgentAtom` release. Starting at
+`0.1.0`, existing `import AgentAtom` clients select the binary product; source-only
+clients must explicitly select and import `AgentAtomSource`. See
+[distribution details](Distribution/README.md) and [release procedure](RELEASING.md).
 
 ## Requirements
 

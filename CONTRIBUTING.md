@@ -14,7 +14,12 @@ git clone https://github.com/abhi266raj/AgentAtom.git
 cd AgentAtom
 swift build
 swift test
+Scripts/verify-products.sh
 ```
+
+The root test suite imports AgentAtomSource. The consumer check tests both public
+products separately. Changes to library code require a new versioned XCFramework;
+see [distribution guidance](Distribution/README.md) and [RELEASING.md](RELEASING.md).
 
 Tests use deterministic injected sessions. See [Tests/README.md](Tests/README.md)
 for coverage and opt-in Apple model checks. Also build the

@@ -2,7 +2,7 @@
 // Copyright (C) 2026 Abhiraj.
 
 #if canImport(FoundationModels) && (os(macOS) || os(iOS) || os(visionOS))
-@testable import AgentAtom
+@testable import AgentAtomSource
 import Foundation
 import FoundationModels
 import Testing
