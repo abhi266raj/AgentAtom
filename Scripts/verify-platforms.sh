@@ -36,10 +36,9 @@ public func schema() -> String { Example.outputSchema.rawValue }
 public func appleSession() -> AppleIntelligenceSession? { AppleIntelligenceSession() }
 #endif
 SWIFT
-sdks=(macosx macosx iphoneos iphonesimulator iphonesimulator appletvos appletvsimulator appletvsimulator watchos watchos watchsimulator watchsimulator xros xrsimulator xrsimulator)
-triples=(arm64-apple-macosx14.0 x86_64-apple-macosx14.0 arm64-apple-ios16.0 arm64-apple-ios16.0-simulator x86_64-apple-ios16.0-simulator arm64-apple-tvos16.0 arm64-apple-tvos16.0-simulator x86_64-apple-tvos16.0-simulator arm64_32-apple-watchos9.0 arm64-apple-watchos9.0 arm64-apple-watchos9.0-simulator x86_64-apple-watchos9.0-simulator arm64-apple-xros1.0 arm64-apple-xros1.0-simulator x86_64-apple-xros1.0-simulator)
-for index in "${!triples[@]}"; do
-    printf 'Compiling binary consumer: %s\n' "${triples[$index]}"
-    swift build --package-path "$consumer" --triple "${triples[$index]}" \
-        --sdk "$(xcrun --sdk "${sdks[$index]}" --show-sdk-path)"
-done
+platforms="$(swift Scripts/ArtifactPlatforms.swift)"
+while read -r sdk triple; do
+    printf 'Compiling binary consumer: %s\n' "$triple"
+    swift build --package-path "$consumer" --triple "$triple" \
+        --sdk "$(xcrun --sdk "$sdk" --show-sdk-path)"
+done <<< "$platforms"

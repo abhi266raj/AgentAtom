@@ -59,13 +59,20 @@ clients must explicitly select and import `AgentAtomSource`. See
 
 ## Requirements
 
-- Swift 6.0+; package deployment targets: macOS 14, iOS/tvOS 16, watchOS 9, visionOS 1.
+- Source: Swift 6.0+. Binary: Xcode 26.6+ (CI-validated baseline). Package deployment targets: macOS 14, iOS/tvOS 16, watchOS 9, visionOS 1.
 - The Apple provider requires Xcode/SDK 26+ and macOS/iOS/visionOS 26+, with
   Apple Intelligence supported, enabled, downloaded, and available.
 - The provider is excluded when FoundationModels or a supported platform is absent.
   Declared deployment targets do not imply the Apple model runs on older systems.
 - Optional token usage metadata requires Swift 6.4/SDK 27 and OS 27+; otherwise it is absent.
 - TypeDecoder is pinned to 2.0.0. See [third-party notices](THIRD_PARTY_NOTICES.md).
+
+## Releases
+
+`main` is the only integration branch. CI publishes a package tag and GitHub
+Release after a merge increases the `VERSION` file and all checks pass. Merges
+without a version increase run validation only. The workflow leaves the protected
+branch locked; see [release procedure](RELEASING.md).
 
 ## License and repository access
 
@@ -75,7 +82,7 @@ are permitted subject to [LICENSE](LICENSE). Review the applicable source-sharin
 obligations before incorporating it into an application or network service.
 Dependencies retain their own licenses. Copyright notices are in [COPYRIGHT](COPYRIGHT).
 
-The default branch, `master`, is locked. Other users cannot directly change this
+The default branch, `main`, is locked. Other users cannot directly change this
 repository. Forks and AGPL-compliant modifications of other copies remain allowed.
 See [contributor guidance](CONTRIBUTING.md) and [release procedure](RELEASING.md).
 
@@ -83,7 +90,9 @@ See [contributor guidance](CONTRIBUTING.md) and [release procedure](RELEASING.md
 
 Clone the repository and open
 `Examples/AgentAtomDemo/AgentAtomDemo.xcodeproj`. The SwiftUI app demonstrates a
-real local model request, streaming, cancellation, and final decoding. See its
+real local model request, streaming, cancellation, and final decoding. For a
+development checkout, first run `Scripts/build-xcframework.sh` to prepare its
+local binary; published version tags download the prebuilt archive automatically. See its
 [README](Examples/AgentAtomDemo/README.md) for requirements and build commands.
 
 
@@ -365,8 +374,10 @@ Existing Spec, ModelledSpec, and JSONSchema implementations are unchanged.
 git clone https://github.com/abhi266raj/AgentAtom.git
 cd AgentAtom
 swift package resolve
+Scripts/build-xcframework.sh
 swift build
 swift test
+Scripts/verify-products.sh
 ```
 
 Deterministic CI runs on macOS 26 and builds the library and example app. Live

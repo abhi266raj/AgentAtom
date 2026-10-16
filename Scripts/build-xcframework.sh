@@ -14,7 +14,7 @@ for index in "${!labels[@]}"; do
     xcodebuild archive -project Distribution/AgentAtom.xcodeproj -scheme AgentAtom \
         -configuration Release -destination "${destinations[$index]}" \
         -archivePath "$output/$label.xcarchive" -derivedDataPath "$output/DerivedData" \
-        CODE_SIGNING_ALLOWED=NO > "$output/$label.log" 2>&1 || {
+        CODE_SIGNING_ALLOWED=NO MARKETING_VERSION="$(cat VERSION)" > "$output/$label.log" 2>&1 || {
             tail -80 "$output/$label.log" >&2
             exit 1
         }

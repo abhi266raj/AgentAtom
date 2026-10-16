@@ -1,41 +1,48 @@
 # Releasing
 
-AgentAtom uses one public repository, immutable semantic-version tags, and two
-SwiftPM products. The next package release is **0.1.0**. Release **0.0.1** remains
-unchanged and source-only. Pre-1.0 releases may change integration requirements;
-prefer exact versions for reproducibility.
+The only integration branch is **main**. There is no develop branch. Main stays
+locked, including for administrators; only the owner may approve an update,
+temporarily unlock it for the merge, and immediately restore the lock. Never
+allow force pushes or deletion or grant outsiders direct write access.
 
-## Prepare an artifact and PR
+## Automatic release on a version increase
 
-1. Create a feature branch. Update source, tests, README, demo version, changelog,
-   and distribution guidance. Both products must build the same implementation.
-2. Run `Scripts/build-xcframework.sh` on a Mac with all supported SDKs. Inspect
-   all nine slices, public interfaces, `@rpath` linkage, and packaged notices.
-3. Commit the artifact inputs. Publish an immutable **prerelease** artifact tag
-   `artifacts-0.1.0` at that commit, attaching AgentAtom.xcframework.zip and
-   checksum.txt. Record source SHA, Xcode/Swift versions, deployment targets, and
-   the archive checksum in its release notes. This is staging, not the package
-   release. Never reuse or replace an artifact URL after publication.
-4. Set the manifest binary URL and SHA-256 to those staged assets. Commit the
-   manifest and open a PR targeting master. Never move the 0.0.1 tag.
-5. Run `swift build`, `swift test`, `Scripts/verify-products.sh`, and build the
-   example as documented in Examples/AgentAtomDemo/README.md. Confirm CI is green,
-   including binary consumer builds on the supported platforms.
-6. Review licenses and notices. The XCFramework includes AGPL and TypeDecoder's
-   Apache-2.0 notices; the public source is the corresponding implementation.
+`VERSION` is the release trigger. For this update it is **0.1.0**. Include an
+increased stable `MAJOR.MINOR.PATCH` value in the feature PR when a release is
+wanted, and update README, CHANGELOG, and the example's displayed version.
+Normal merges that leave VERSION unchanged run CI without publishing. Decreases,
+leading zeroes, malformed versions, and prerelease suffixes fail validation.
 
-## Publish the package after approval
+When the owner merges a version increase into main, CI automatically:
 
-`master` is locked for administrators too. Only the repository owner may
-explicitly approve a merge and temporarily unlock it. Merge the reviewed PR,
-restore the lock immediately, and confirm the merged commit passes CI. Never
-permit force pushes or deletion or grant outsiders direct write access.
+1. Builds all nine XCFramework destinations with library evolution and @rpath,
+   using the same sources as AgentAtomSource, and records toolchain/source SHA.
+2. Runs the deterministic source suite, isolated public consumer tests for both
+   products, binary compilation across the shipped architectures, and demo build.
+3. Publishes the immutable binary asset in the prerelease `artifacts-VERSION`.
+   It includes the archive, SHA-256, source commit, toolchain, and license notices.
+4. Generates a release-only Package.swift with that public URL and checksum, and
+   tests both products again as separate consumers against the public download.
+5. Creates a generated manifest commit whose parent is the verified merged source,
+   tags it with VERSION, and publishes the matching GitHub Release as latest.
 
-Tag that verified master commit **0.1.0** and publish matching release notes.
-Link the immutable artifact prerelease and describe both products, import names,
-minimum toolchain, and the 0.0.1 source-to-binary integration change. Do not retag
-or replace assets. Confirm an independent consumer resolves exact version 0.1.0
-for each product and runs the public contract suite before announcing completion.
+The workflow uses a job-scoped contents-write GitHub token for publication; PR
+jobs are read-only. It does not push a commit to main or unlock any protection.
+The tag includes the complete corresponding source and docs; only its manifest
+changes from its main parent. The asset tag is not a semantic SwiftPM version.
 
-ScriptMakerServer retains its separate local snapshot until its migration task is
-implemented. Publishing AgentAtom does not change that application's dependencies.
+Release tags/assets are never replaced. A retry can reuse the original binary
+only if its recorded source SHA matches, and can finish publishing a tag only if
+its parent and manifest match. Fixes need a new version once released. Inspect
+failed CI logs before rerunning. Workflow dispatch runs validation only.
+
+## Working from a development checkout
+
+The main/feature manifest references the locally built XCFramework. Run
+`Scripts/build-xcframework.sh` before SwiftPM resolution, source tests, or opening
+the demo from a checkout. Published semantic tags instead reference the remote
+archive, so package consumers do not build or stage a framework themselves.
+See [distribution guidance](Distribution/README.md) for local verification.
+
+Do not move the existing 0.0.1 tag: it remains source-only. ScriptMakerServer keeps
+its local snapshot until the separate dependency migration task is implemented.

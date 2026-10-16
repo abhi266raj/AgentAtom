@@ -14,8 +14,7 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "AgentAtom",
-            url: "https://github.com/abhi266raj/AgentAtom/releases/download/artifacts-0.1.0/AgentAtom.xcframework.zip",
-            checksum: "978a80b2318df4e940c8dc86814a7dd6fcf526455a039548c337a4f76b6ecd2e"
+            path: ".build/distribution/AgentAtom.xcframework"
         ),
         .target(
             name: "AgentAtomSource",

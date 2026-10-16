@@ -3,6 +3,7 @@
 Run deterministic tests from the repository root:
 
 ```sh
+Scripts/build-xcframework.sh
 swift test
 Scripts/verify-products.sh
 ```

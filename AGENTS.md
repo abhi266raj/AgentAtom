@@ -10,8 +10,8 @@ tests, documentation, or the example app. Do not add application-specific rules.
 - Build the macOS example using the command in Examples/AgentAtomDemo/README.md.
 - Keep README, test instructions, examples, and release notes consistent.
 - Use AGPL-3.0-only for project code; preserve dependency notices.
-- The default branch is `master` and is locked. Never bypass its protection.
-  Use feature branches and PRs. Only the owner may temporarily unlock master for
+- The default branch is `main` and is locked. Never bypass its protection.
+  Use feature branches and PRs. Only the owner may temporarily unlock main for
   an approved update; restore the lock immediately afterward.
-- Initial bootstrap establishes master before protection is enabled.
+- Initial bootstrap establishes main before protection is enabled.
 - Follow CONTRIBUTING.md and RELEASING.md for checks and publication.

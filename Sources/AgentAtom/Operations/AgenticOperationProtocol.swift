@@ -34,13 +34,13 @@ protocol OperationLifecycle: AgenticOperationProtocol {
 }
 
 extension OperationLifecycle {
-    public func instructions() throws(AgenticError) -> String {
+    func lifecycleInstructions() throws(AgenticError) -> String {
         try strategy.assemble(
             role: Specification.role, instructions: spec.instructions,
             schema: Specification.outputSchema)
     }
 
-    public func cancel() {
+    func cancelRun() {
         switch state {
         case .running, .paused:
             state = .cancelling
@@ -50,7 +50,7 @@ extension OperationLifecycle {
         }
     }
 
-    public func pause() async throws(AgenticError) {
+    func pauseRun() async throws(AgenticError) {
         guard let work = task else { throw .notRunning }
         guard state == .running else { throw .unsupported }
         try await session.pause(id)
@@ -59,7 +59,7 @@ extension OperationLifecycle {
         state = .paused
     }
 
-    public func resume() async throws(AgenticError) {
+    func resumeRun() async throws(AgenticError) {
         guard let work = task else { throw .notRunning }
         guard state == .paused else { throw .unsupported }
         try await session.resume(id)
