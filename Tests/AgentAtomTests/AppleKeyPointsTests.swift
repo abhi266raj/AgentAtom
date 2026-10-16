@@ -108,7 +108,9 @@ struct AppleKeyPointsTests {
                 Issue.record("Expected an AI-declared failure for insufficient input, received \(response).")
                 return
             }
-            #expect(!reason.isEmpty)
+            let detail = reason.lowercased()
+            #expect(detail.contains("fact"), "Failure must explain the missing facts: \(reason)")
+            #expect(detail.contains("three") || detail.contains("3"), "Failure must identify the three-fact requirement: \(reason)")
             print("Apple KeyPoints declared failure: \(reason)")
         } else {
             let json = try response.get()

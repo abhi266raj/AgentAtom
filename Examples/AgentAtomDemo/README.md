@@ -32,3 +32,13 @@ xcodebuild -project Examples/AgentAtomDemo/AgentAtomDemo.xcodeproj \
 This builds an unsigned local demonstration app; it is not a notarized release.
 For your own project, use the remote package URL and exact version `0.0.1` as
 shown in the root README. The example app and package use AGPL-3.0-only.
+
+## Failure details
+
+The sample specification asks the model to explain the exact unmet requirement
+and missing input in its Failure reason. The UI distinguishes AI-declared failure
+from provider/operation error and preserves the full supplied reason. If only a
+generic rejection is supplied, it explicitly says that no more specific reason
+was provided and reminds you of this sample's three-fact requirement. That reminder
+is context, not an invented diagnosis of the provider error. This behavior is
+sample-specific; the AgentAtom library's error behavior is unchanged.

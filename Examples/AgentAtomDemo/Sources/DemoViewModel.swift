@@ -35,7 +35,14 @@ final class DemoViewModel {
             }
         }
         if let failure {
-            status = failure.localizedDescription
+            switch failure {
+            case .generationFailed(let reason):
+                status = "AI-declared failure: " + Self.failureReason(reason)
+            case .operationFailed(let reason):
+                status = "Provider or operation error: " + Self.failureReason(reason)
+            default:
+                status = failure.localizedDescription
+            }
             return
         }
         do {
@@ -49,6 +56,16 @@ final class DemoViewModel {
         } catch {
             status = "Could not decode the final response: \(error.localizedDescription)"
         }
+    }
+
+    private static func failureReason(_ reason: String) -> String {
+        let text = reason.trimmingCharacters(in: .whitespacesAndNewlines)
+        let generic = text.lowercased().trimmingCharacters(in: .punctuationCharacters)
+        if text.isEmpty || ["rejected", "failed", "failure", "invalid input"].contains(generic) {
+            return (text.isEmpty ? "No reason supplied." : text) +
+                " The provider did not supply a more specific reason. This sample requires three distinct facts; check the input against that requirement."
+        }
+        return text
     }
 
     func cancel() async {
