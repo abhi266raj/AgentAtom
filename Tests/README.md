@@ -89,3 +89,8 @@ require a downloaded Apple model. The example app is compiled separately using
 When reporting results, distinguish deterministic tests, skipped live tests, and
 actual live execution. New publication does not expand the historical platform
 claims above. The package and examples are AGPL-3.0-only; see [LICENSE](../LICENSE).
+
+The KeyPoints test specification also asks for an actionable Failure reason.
+Opt-in insufficient-input tests assert that it names the three-fact requirement,
+and print the complete reason when reporting the outcome. This is a test/example
+requirement; the library does not impose it on other callers' specifications.

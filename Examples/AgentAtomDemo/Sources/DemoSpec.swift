@@ -14,6 +14,9 @@ struct DemoSpec: ModelledSpec {
     let instructions = """
         Return exactly three distinct facts explicitly supported by the input.
         If fewer than three facts are supplied, choose Failure instead of inventing facts.
+        In the Failure reason, explain the exact unmet requirement and what input
+        is missing. For insufficient input, explicitly mention the requirement for
+        three distinct facts. Never return only "Rejected", "Failed", or "Invalid input".
         List distinct explicitly named people in first-appearance order; use an empty
         people array if no people are named. Write short, clear sentences.
         """

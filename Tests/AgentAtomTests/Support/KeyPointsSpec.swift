@@ -22,6 +22,9 @@ struct KeyPointsSpec: ModelledSpec {
         "Good morning!" supplies no facts
         and is insufficient. When a failure alternative is available, choose it
         for insufficient input; empty arrays or fewer than three points are not success.
+        For Failure, explain the exact unmet requirement in the reason. When facts
+        are insufficient, explicitly say that three distinct facts are required and
+        describe the missing information. Do not return only "Rejected" or "Failed".
         Extract distinct explicitly named people or characters in first-appearance
         order. Use an empty person array when the prose contains no named people.
         """
