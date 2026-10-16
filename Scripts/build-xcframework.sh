@@ -22,7 +22,6 @@ for index in "${!labels[@]}"; do
 done
 rm -rf "$output/AgentAtom.xcframework"
 xcodebuild -create-xcframework "${frameworks[@]}" -output "$output/AgentAtom.xcframework"
-# Ship the license and notices with the binary as well as in the source repository.
 cp LICENSE COPYRIGHT THIRD_PARTY_NOTICES.md "$output/AgentAtom.xcframework/"
 cp -R ThirdPartyNotices "$output/AgentAtom.xcframework/"
 (cd "$output" && /usr/bin/ditto -c -k --keepParent AgentAtom.xcframework AgentAtom.xcframework.zip)

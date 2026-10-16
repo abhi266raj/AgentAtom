@@ -3,7 +3,6 @@
 
 import Foundation
 
-/// An operation or session failure.
 public enum AgenticError: Error, Sendable, Equatable {
     case operationFailed(reason: String)
     case generationFailed(reason: String)

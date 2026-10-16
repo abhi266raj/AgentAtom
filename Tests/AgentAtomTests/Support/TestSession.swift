@@ -29,7 +29,6 @@ actor TestGate {
     }
 }
 
-/// Test-only fixtures exercise operations; they do not validate Apple's provider.
 final class TestSession: AgenticSessionProtocol {
     struct Configuration: Sendable {
         var responses: [Result<String, AgenticError>] = [.success(KeyPointsSpec.namedJSON)]

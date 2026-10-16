@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2026 Abhiraj.
 
-/// A reusable operation with actor-isolated execution and lifecycle control.
 public protocol AgenticOperationProtocol: Actor, Identifiable where ID == ObjectIdentifier {
     associatedtype Specification: Spec
     associatedtype Result: Sendable
@@ -9,19 +8,16 @@ public protocol AgenticOperationProtocol: Actor, Identifiable where ID == Object
     var spec: Specification { get }
     var state: OperationState { get }
 
-    /// The final instructions assembled from the specification.
     func instructions() throws(AgenticError) -> String
     /// Starts a run and returns its result or stream; the caller owns no task handle.
     func execute() async -> Result
     /// Cancels the active run, retaining its resources until cleanup completes.
     func cancel()
-    /// Pauses the active run if supported by the session.
     func pause() async throws(AgenticError)
-    /// Resumes the paused run if supported by the session.
     func resume() async throws(AgenticError)
 }
 
-// Defaults share behavior; each actor owns its task and state.
+// Public actors forward lifecycle requirements explicitly for module interfaces.
 protocol OperationLifecycle: AgenticOperationProtocol {
     associatedtype Session: AgenticSessionProtocol
     associatedtype Strategy: OperationStrategy

@@ -1,6 +1,5 @@
 #!/bin/bash
 # SPDX-License-Identifier: AGPL-3.0-only
-# Compile an external binary consumer for every shipped architecture/SDK.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 root="$PWD"

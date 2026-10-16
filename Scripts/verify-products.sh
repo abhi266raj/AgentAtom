@@ -1,6 +1,5 @@
 #!/bin/bash
 # SPDX-License-Identifier: AGPL-3.0-only
-# Run the public contract suite against each product in an isolated consumer.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 root="$PWD"

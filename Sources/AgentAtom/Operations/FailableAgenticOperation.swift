@@ -15,7 +15,6 @@ public actor FailableAgenticOperation<Specification: Spec, Session: AgenticSessi
         self.session = session
     }
 
-    // Explicit members remain visible in distributed Swift module interfaces.
     public func instructions() throws(AgenticError) -> String { try lifecycleInstructions() }
     public func cancel() { cancelRun() }
     public func pause() async throws(AgenticError) { try await pauseRun() }

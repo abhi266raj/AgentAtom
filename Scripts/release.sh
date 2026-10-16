@@ -1,6 +1,5 @@
 #!/bin/bash
 # SPDX-License-Identifier: AGPL-3.0-only
-# Called by CI only after merged source and binary checks pass.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 version="$(cat VERSION)"
@@ -45,7 +44,6 @@ fi
 # Only the generated tag commit changes; never push a commit to main.
 swift Scripts/Release.swift manifest "$version" "$checksum" Package.swift
 Scripts/verify-products.sh
-# Verify the public download and checksum before creating the package tag.
 if [ -n "$existing_tag" ]; then
     test "$(git rev-parse "$existing_tag^")" = "$source_commit"
     test "$(git show "$existing_tag:Package.swift")" = "$(cat Package.swift)"
