@@ -25,7 +25,7 @@ let package = Package(
     platforms: [.macOS(.v14)],
     dependencies: [.package(path: "$root")],
     targets: [
-        .executableTarget(name: "FailureProbe", dependencies: [.product(name: "$product", package: "AgentAtom-publication")], path: "Tests/FailureProbe"),
+        .executableTarget(name: "FailureProbe", dependencies: [.product(name: "$product", package: "AgentAtom-publication")], path: "Tests/FailureProbe", linkerSettings: [.unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", "@executable_path"])]),
         .testTarget(name: "AgentAtomTests", dependencies: [.product(name: "$product", package: "AgentAtom-publication"), "FailureProbe"])
     ],
     swiftLanguageModes: [.v6]

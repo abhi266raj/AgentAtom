@@ -40,6 +40,9 @@ import the binary. Framework install names use `@rpath`.
 The archive includes LICENSE, COPYRIGHT, and the Apache-2.0 dependency notices.
 Frameworks are unsigned; consuming applications embed and sign the dynamic
 framework during their normal build. The demo does this through SwiftPM.
+A standalone SwiftPM executable must copy AgentAtom.framework alongside its
+executable and add `-Xlinker -rpath -Xlinker @executable_path`; the isolated
+FailureProbe consumer includes this executable-specific setting.
 
 `verify-products.sh` creates isolated consumers and tests the same public
 contracts against each product. Internal instruction tests stay in the normal
