@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (unreleased)
+## 0.1.0
 
 - Recommended AgentAtom XCFramework product and optional AgentAtomSource product
   from the same repository and version. Source imports become AgentAtomSource.

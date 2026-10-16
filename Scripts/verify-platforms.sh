@@ -14,6 +14,7 @@ import PackageDescription
 let package = Package(
     name: "PlatformConsumer",
     platforms: [.macOS(.v14), .iOS(.v16), .tvOS(.v16), .watchOS(.v9), .visionOS(.v1)],
+    products: [.library(name: "PlatformConsumer", targets: ["Consumer"])],
     dependencies: [.package(path: "$root")],
     targets: [.target(name: "Consumer", dependencies: [.product(name: "AgentAtom", package: "$identity")])],
     swiftLanguageModes: [.v6]
@@ -38,7 +39,25 @@ public func appleSession() -> AppleIntelligenceSession? { AppleIntelligenceSessi
 SWIFT
 platforms="$(swift Scripts/ArtifactPlatforms.swift)"
 while read -r sdk triple; do
-    printf 'Compiling binary consumer: %s\n' "$triple"
-    swift build --package-path "$consumer" --triple "$triple" \
-        --sdk "$(xcrun --sdk "$sdk" --show-sdk-path)"
+    architecture="${triple%%-apple-*}"
+    case "$sdk" in
+        macosx) destination='generic/platform=macOS' ;;
+        iphoneos) destination='generic/platform=iOS' ;;
+        iphonesimulator) destination='generic/platform=iOS Simulator' ;;
+        appletvos) destination='generic/platform=tvOS' ;;
+        appletvsimulator) destination='generic/platform=tvOS Simulator' ;;
+        watchos) destination='generic/platform=watchOS' ;;
+        watchsimulator) destination='generic/platform=watchOS Simulator' ;;
+        xros) destination='generic/platform=visionOS' ;;
+        xrsimulator) destination='generic/platform=visionOS Simulator' ;;
+        *) exit 1 ;;
+    esac
+    printf 'Compiling binary consumer with Xcode: %s\n' "$triple"
+    (cd "$consumer" && xcodebuild -scheme PlatformConsumer -configuration Debug \
+        -destination "$destination" -arch "$architecture" \
+        -derivedDataPath "$consumer/DerivedData" CODE_SIGNING_ALLOWED=NO build) \
+        > "$consumer/$triple.log" 2>&1 || {
+            tail -80 "$consumer/$triple.log" >&2
+            exit 1
+        }
 done <<< "$platforms"
