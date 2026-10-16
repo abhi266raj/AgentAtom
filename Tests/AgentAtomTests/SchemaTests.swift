@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2026 Abhiraj.
 
-@testable import AgentAtom
+@testable import AgentAtomSource
 import Foundation
 import Testing
 

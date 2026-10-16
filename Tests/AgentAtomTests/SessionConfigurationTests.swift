@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2026 Abhiraj.
 
-import AgentAtom
+import AgentAtomSource
 import Foundation
 import Testing
 
@@ -22,10 +22,10 @@ struct SessionConfigurationTests {
         #expect(AgenticExecutionMetadata.Fields().isEmpty)
     }
 
-    #if canImport(FoundationModels) && (os(macOS) || os(iOS) || os(visionOS))
+    #if canImport(FoundationModels) && (os(macOS) || os(iOS))
     @Test(arguments: [Double.nan, -.infinity, -1, 0, 0.5, 1, 2, .infinity])
     func appleTemperatureBounds(temperature: Double) {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let configuration = AppleIntelligenceSession.Configuration(temperature: temperature)
             let expected = temperature.isNaN ? 1 : min(max(temperature, 0), 1)
             #expect(configuration.temperature == expected)
@@ -35,7 +35,7 @@ struct SessionConfigurationTests {
 
     @Test
     func appleMetadataConfiguration() {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let configuration = AppleIntelligenceSession.Configuration(metadata: [.duration, .tokenUsage])
             #expect(configuration.metadata == [.duration, .tokenUsage])
             #expect(configuration.temperature == 1)

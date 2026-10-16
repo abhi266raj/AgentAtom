@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2026 Abhiraj.
 
-#if canImport(FoundationModels) && (os(macOS) || os(iOS) || os(visionOS))
+#if canImport(FoundationModels) && (os(macOS) || os(iOS))
     import Foundation
     import Synchronization
     internal import FoundationModels
 
-    @available(macOS 26, iOS 26, visionOS 26, *)
+    @available(macOS 26, iOS 26, *)
     public final class AppleIntelligenceSession: AgenticSessionProtocol {
         public let configuration: Configuration
         private let state = Mutex(State())
@@ -96,7 +96,7 @@
             var promptTokens: Int?
             var completionTokens: Int?
             #if compiler(>=6.4)
-                if #available(macOS 27, iOS 27, visionOS 27, *), fields.contains(.tokenUsage) {
+                if #available(macOS 27, iOS 27, *), fields.contains(.tokenUsage) {
                     promptTokens = run.model.usage.input.totalTokenCount
                     completionTokens = run.model.usage.output.totalTokenCount
                 }

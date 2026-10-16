@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2026 Abhiraj.
 
-import AgentAtom
+import AgentAtomSource
 import Foundation
 #if canImport(os)
 import os
@@ -29,7 +29,6 @@ actor TestGate {
     }
 }
 
-/// Test-only fixtures exercise operations; they do not validate Apple's provider.
 final class TestSession: AgenticSessionProtocol {
     struct Configuration: Sendable {
         var responses: [Result<String, AgenticError>] = [.success(KeyPointsSpec.namedJSON)]

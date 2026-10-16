@@ -3,7 +3,9 @@
 Run deterministic tests from the repository root:
 
 ```sh
+Scripts/build-xcframework.sh
 swift test
+Scripts/verify-products.sh
 ```
 
 The fixture session is test-only. Its synchronization gates control admission,
@@ -17,6 +19,12 @@ identity, overlapping calls, concurrent metadata reads, cancellation cleanup,
 stream termination and reference release, lifecycle capabilities, stale responses,
 and configuration bounds. Only instruction-failure/schema and native adapter tests use
 `@testable`; normal operation tests consume the public API.
+
+The root suite exercises **AgentAtomSource**, including internal contracts.
+`Scripts/verify-products.sh` runs public contracts in separate consumer packages
+against **AgentAtom** (downloaded XCFramework) and **AgentAtomSource**. These
+consumer tests use ordinary imports, with no test access to binary internals.
+Both variants must pass. The macOS demo exercises the binary product.
 
 ## KeyPoints sample
 
@@ -48,7 +56,7 @@ fence stripping, fake live results, or additional executable product is used.
 AGENTATOM_LIVE_TESTS=1 swift test --filter AppleKeyPointsTests
 ```
 
-Live tests require macOS/iOS/visionOS 26+ and an available local Apple model. Model
+Live tests require macOS/iOS 26+ and an available local Apple model. Model
 checks are skipped when unavailable; a separate test reports availability and checks
 the failable initializer. Regular tests do not invoke a model or network service.
 
@@ -63,7 +71,6 @@ Historical validation of the imported implementation on macOS 27.0.1, Xcode 27.0
 | Live streaming sample | Passed direct final JSON decoding and expected points/names |
 | Unsupported Apple schema | Failed before admission with diagnostic error and no execution record, as expected |
 | iOS simulator target, deployment 16 | AgentAtom library build passed with SDK 27 |
-| tvOS simulator target, deployment 16 | AgentAtom library build passed with Apple provider excluded, SDK 27 |
 
 The full live run enables all 54 test functions; parameterized cases are additional.
 The original prompt-only adapter produced fenced JSON and invalid partial successes. The current implementation uses native

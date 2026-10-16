@@ -9,11 +9,11 @@ Swift specifications, reusable operations, and injected sessions.
 ## Install with Swift Package Manager
 
 Add `https://github.com/abhi266raj/AgentAtom.git` in Xcode's package dependencies,
-and select **Exact Version: 0.0.1**. Add the **AgentAtom** product to your target.
+and select **Exact Version: 0.1.0**. Add the **AgentAtom** product to your target for the recommended precompiled XCFramework.
 For a Swift package manifest:
 
 ```swift
-.package(url: "https://github.com/abhi266raj/AgentAtom.git", exact: "0.0.1")
+.package(url: "https://github.com/abhi266raj/AgentAtom.git", exact: "0.1.0")
 ```
 
 Use this product dependency in your target:
@@ -22,17 +22,57 @@ Use this product dependency in your target:
 .product(name: "AgentAtom", package: "AgentAtom")
 ```
 
-The Git tag `0.0.1` is the SwiftPM release; no central registry account is required.
+### Choose binary or source
+
+Both products come from the same repository URL and version `0.1.0`:
+
+| Product | Distribution | Import |
+| --- | --- | --- |
+| **AgentAtom** (recommended) | Precompiled dynamic XCFramework | `import AgentAtom` |
+| **AgentAtomSource** | Compiles the same implementation from source | `import AgentAtomSource` |
+
+For source builds, select **AgentAtomSource** in Xcode, or use:
+
+```swift
+.product(name: "AgentAtomSource", package: "AgentAtom")
+```
+
+Change your imports to `import AgentAtomSource`. The API declarations and behavior
+are the same, but the modules define distinct Swift types: choose one product for
+each dependency graph; do not mix values between them. SwiftPM has no automatic
+default product; this guide and the example recommend the binary product.
+
+The XCFramework supports Mac (Apple silicon and Intel) and iPhone, including
+iOS device and simulator slices. It includes public Swift module interfaces,
+with TypeDecoder linked into the framework. App consumers must embed and sign the
+dynamic framework; Xcode handles this when the package product is added to the app.
+The package downloads the archive from GitHub Releases and verifies its SHA-256.
+
+Both variants remain AGPL-3.0-only. Choosing binary distribution does not hide the
+source in this public repository or change the license. SwiftPM may still fetch
+repository sources and resolve declared dependencies for either product.
+
+Version `0.0.1` remains the original source-only `AgentAtom` release. Starting at
+`0.1.0`, existing `import AgentAtom` clients select the binary product; source-only
+clients must explicitly select and import `AgentAtomSource`. See
+[distribution details](Distribution/README.md) and [release procedure](RELEASING.md).
 
 ## Requirements
 
-- Swift 6.0+; package deployment targets: macOS 14, iOS/tvOS 16, watchOS 9, visionOS 1.
-- The Apple provider requires Xcode/SDK 26+ and macOS/iOS/visionOS 26+, with
+- Source: Swift 6.0+. Binary: Xcode 26.6+ (CI-validated baseline). Package deployment targets: macOS 14 and iOS 16 (iPhone).
+- The Apple provider requires Xcode/SDK 26+ and macOS/iOS 26+, with
   Apple Intelligence supported, enabled, downloaded, and available.
 - The provider is excluded when FoundationModels or a supported platform is absent.
   Declared deployment targets do not imply the Apple model runs on older systems.
 - Optional token usage metadata requires Swift 6.4/SDK 27 and OS 27+; otherwise it is absent.
 - TypeDecoder is pinned to 2.0.0. See [third-party notices](THIRD_PARTY_NOTICES.md).
+
+## Releases
+
+`main` is the only integration branch. CI publishes a package tag and GitHub
+Release after a merge increases the `VERSION` file and all checks pass. Merges
+without a version increase run validation only. The workflow leaves the protected
+branch locked; see [release procedure](RELEASING.md).
 
 ## License and repository access
 
@@ -42,7 +82,7 @@ are permitted subject to [LICENSE](LICENSE). Review the applicable source-sharin
 obligations before incorporating it into an application or network service.
 Dependencies retain their own licenses. Copyright notices are in [COPYRIGHT](COPYRIGHT).
 
-The default branch, `master`, is locked. Other users cannot directly change this
+The default branch, `main`, is locked. Other users cannot directly change this
 repository. Forks and AGPL-compliant modifications of other copies remain allowed.
 See [contributor guidance](CONTRIBUTING.md) and [release procedure](RELEASING.md).
 
@@ -50,7 +90,9 @@ See [contributor guidance](CONTRIBUTING.md) and [release procedure](RELEASING.md
 
 Clone the repository and open
 `Examples/AgentAtomDemo/AgentAtomDemo.xcodeproj`. The SwiftUI app demonstrates a
-real local model request, streaming, cancellation, and final decoding. See its
+real local model request, streaming, cancellation, and final decoding. For a
+development checkout, first run `Scripts/build-xcframework.sh` to prepare its
+local binary; published version tags download the prebuilt archive automatically. See its
 [README](Examples/AgentAtomDemo/README.md) for requirements and build commands.
 
 
@@ -92,8 +134,8 @@ struct SummarySpec: ModelledSpec {
     var output: SummaryOutput?
 }
 
-#if canImport(FoundationModels) && (os(macOS) || os(iOS) || os(visionOS))
-@available(macOS 26, iOS 26, visionOS 26, *)
+#if canImport(FoundationModels) && (os(macOS) || os(iOS))
+@available(macOS 26, iOS 26, *)
 func summarize() async throws -> SummaryOutput? {
     guard let session = AppleIntelligenceSession() else { return nil }
     let spec = SummarySpec(input: "Asha opened a library. Ben donated books. Mira hosted a reading.")
@@ -131,7 +173,7 @@ native guided generation and returns `GeneratedContent.jsonString`. Shape enforc
 does not guarantee factual correctness or compliance with semantic instructions.
 
 ```swift
-if #available(macOS 26, iOS 26, visionOS 26, *) {
+if #available(macOS 26, iOS 26, *) {
     guard let session = AppleIntelligenceSession(configuration: .init(
         metadata: [.duration, .modelIdentifier]
     )) else {
@@ -240,7 +282,7 @@ Streaming checks the caller before launching its independent producer; provider
 stream cancellation and consumer termination handle the active run without snapshot polling.
 
 `AppleIntelligenceSession` is a final Sendable class, compiled only where FoundationModels is supported
-and is available on macOS/iOS/visionOS 26+. Its failable initializer checks device,
+and is available on macOS/iOS 26+. Its failable initializer checks device,
 settings, and model readiness once. It uses `SystemLanguageModel.default` and one
 file-level platform guard. The package retains its older deployment minimums.
 
@@ -332,8 +374,10 @@ Existing Spec, ModelledSpec, and JSONSchema implementations are unchanged.
 git clone https://github.com/abhi266raj/AgentAtom.git
 cd AgentAtom
 swift package resolve
+Scripts/build-xcframework.sh
 swift build
 swift test
+Scripts/verify-products.sh
 ```
 
 Deterministic CI runs on macOS 26 and builds the library and example app. Live

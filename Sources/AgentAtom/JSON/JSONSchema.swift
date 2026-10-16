@@ -2,14 +2,11 @@
 // Copyright (C) 2026 Abhiraj.
 
 import Foundation
-// TypeDecoder and TypeInfo inspect Decodable model structure.
 internal import TypeDecoder
 
 public struct JSONSchema: Sendable, Equatable {
     public let rawValue: String
 
-    /// Input: `struct Person: Decodable { let name: String }`.
-    /// Output: `{"properties":{"name":{"type":"string"}},"required":["name"],"type":"object"}`.
     public init?<T: Decodable>(_ type: T.Type) {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
@@ -31,20 +28,16 @@ extension JSONSchema: CustomDebugStringConvertible {
     public var debugDescription: String { description }
 }
 
-// Keeps schema-generation helpers scoped to this file.
 extension JSONSchema {
     fileprivate struct Constants {
-        // Bounds recursive schema conversion.
         static let maximumDepth = 64
         static let emptyObject = Data("{}".utf8)
 
-        // Derivation fails for unsupported models or excessive nesting.
         enum DerivationFailure: Error {
             case unsupportedType
             case depthLimit
         }
 
-        // Schema shapes serialized by Foundation's JSONEncoder.
         indirect enum DerivedSchema: Encodable {
             case scalar(String, format: String? = nil, contentEncoding: String? = nil)
             case object([String: DerivedSchema], required: [String])
@@ -52,7 +45,6 @@ extension JSONSchema {
             case array(DerivedSchema)
             case nullable(DerivedSchema)
 
-            // Called only by the schema initializer in this file.
             fileprivate init<T: Decodable>(_ type: T.Type) throws {
                 try self.init(TypeDecoder.decode(type))
             }

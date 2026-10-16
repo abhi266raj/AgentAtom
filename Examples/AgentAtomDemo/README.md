@@ -10,9 +10,17 @@ three-point validation. The sample input is fictional demonstration text.
 Requires Xcode 26+ and macOS 26+ for the Apple provider. Enable Apple Intelligence
 on a supported Mac and wait for model downloads. No API key or server is needed.
 
+From a development checkout, first run `Scripts/build-xcframework.sh` at the
+repository root to generate the local binary. Published package tags download
+the prebuilt binary instead.
+
 Open `AgentAtomDemo.xcodeproj` in Xcode, select the **AgentAtomDemo** scheme and
 **My Mac**, then Run. The project references AgentAtom at the repository root,
-so clone the complete repository before opening it.
+so clone the complete repository before opening it. It selects the recommended
+binary **AgentAtom** product (local in development; downloaded and checksum-verified
+by SwiftPM for published versions).
+The app embeds the dynamic framework. To experiment with the source variant,
+select **AgentAtomSource** instead and change imports to `import AgentAtomSource`.
 
 Use the supplied sample, or enter at least three distinct facts. Choose Generate.
 Try a greeting to see a model-declared failure. Cancel waits for provider cleanup;
@@ -30,7 +38,7 @@ xcodebuild -project Examples/AgentAtomDemo/AgentAtomDemo.xcodeproj \
 ```
 
 This builds an unsigned local demonstration app; it is not a notarized release.
-For your own project, use the remote package URL and exact version `0.0.1` as
+For your own project, use the remote package URL and exact version `0.1.0` as
 shown in the root README. The example app and package use AGPL-3.0-only.
 
 ## Failure details

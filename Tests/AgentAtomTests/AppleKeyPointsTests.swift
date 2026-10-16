@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 // Copyright (C) 2026 Abhiraj.
 
-#if canImport(FoundationModels) && (os(macOS) || os(iOS) || os(visionOS))
-import AgentAtom
+#if canImport(FoundationModels) && (os(macOS) || os(iOS))
+import AgentAtomSource
 import Foundation
 import FoundationModels
 import Testing
@@ -13,7 +13,7 @@ import Testing
 ))
 struct AppleKeyPointsTests {
     private static var modelAvailable: Bool {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             return SystemLanguageModel.default.isAvailable
         }
         return false
@@ -21,7 +21,7 @@ struct AppleKeyPointsTests {
 
     @Test
     func availabilityMatchesFailableInitialization() {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let availability = SystemLanguageModel.default.availability
             print("Apple model availability: \(availability)")
             #expect((AppleIntelligenceSession() != nil) == Self.modelAvailable)
@@ -31,7 +31,7 @@ struct AppleKeyPointsTests {
     @Test(.enabled(if: Self.modelAvailable, "The local Apple model is unavailable."),
           arguments: [KeyPointsSpec.namedInput, KeyPointsSpec.unnamedInput])
     func liveKeyPointsSample(input: String) async throws {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let session = try #require(AppleIntelligenceSession(configuration: .init(
                 metadata: [.duration, .modelIdentifier, .tokenUsage], temperature: 0)))
             let spec = KeyPointsSpec(input: input)
@@ -56,7 +56,7 @@ struct AppleKeyPointsTests {
     @Test(.enabled(if: Self.modelAvailable, "The local Apple model is unavailable."),
           arguments: [KeyPointsSpec.namedInput, "Hello.", KeyPointsSpec.insufficientInput])
     func liveFailableSample(input: String) async throws {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let session = try #require(AppleIntelligenceSession(configuration: .init(temperature: 0)))
             let operation = FailableAgenticOperation(spec: KeyPointsSpec(input: input), session: session)
             try validate(await operation.execute(), input: input)
@@ -65,7 +65,7 @@ struct AppleKeyPointsTests {
 
     @Test(.enabled(if: Self.modelAvailable, "The local Apple model is unavailable."))
     func liveStreamingSample() async throws {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let session = try #require(AppleIntelligenceSession(configuration: .init(temperature: 0)))
             let operation = StreamingAgenticOperation(spec: KeyPointsSpec(input: KeyPointsSpec.unnamedInput), session: session)
             var final: Result<String, AgenticError>?
@@ -81,7 +81,7 @@ struct AppleKeyPointsTests {
     @Test(.enabled(if: Self.modelAvailable, "The local Apple model is unavailable."),
           arguments: [KeyPointsSpec.namedInput, "Hello.", KeyPointsSpec.insufficientInput])
     func liveFailableStreamingSample(input: String) async throws {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let session = try #require(AppleIntelligenceSession(configuration: .init(temperature: 0)))
             let operation = FailableStreamingAgenticOperation(spec: KeyPointsSpec(input: input), session: session)
             var final: Result<String, AgenticError>?
@@ -92,7 +92,7 @@ struct AppleKeyPointsTests {
 
     @Test(.enabled(if: Self.modelAvailable, "The local Apple model is unavailable."))
     func unsupportedSchemaFailsBeforeAdmission() async throws {
-        if #available(macOS 26, iOS 26, visionOS 26, *) {
+        if #available(macOS 26, iOS 26, *) {
             let session = try #require(AppleIntelligenceSession())
             let operation = AgenticOperation(spec: KeyPointsSpec(input: "input"), session: session)
             let schema: JSONString = #"{"type":"string","format":"uuid"}"#

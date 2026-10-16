@@ -15,6 +15,11 @@ public actor FailableAgenticOperation<Specification: Spec, Session: AgenticSessi
         self.session = session
     }
 
+    public func instructions() throws(AgenticError) -> String { try lifecycleInstructions() }
+    public func cancel() { cancelRun() }
+    public func pause() async throws(AgenticError) { try await pauseRun() }
+    public func resume() async throws(AgenticError) { try await resumeRun() }
+
     public func execute() async -> Result {
         await start()
     }

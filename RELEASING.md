@@ -1,28 +1,48 @@
 # Releasing
 
-AgentAtom is distributed through its public Git repository and semantic-version
-tags. Swift Package Manager has no mandatory central publishing step. Consumers
-add `https://github.com/abhi266raj/AgentAtom.git` and select version `0.0.1`.
+The only integration branch is **main**. There is no develop branch. Main stays
+locked, including for administrators; only the owner may approve an update,
+temporarily unlock it for the merge, and immediately restore the lock. Never
+allow force pushes or deletion or grant outsiders direct write access.
 
-The initial release is `0.0.1` (Git tag `0.0.1`). Pre-1.0 versions may change API;
-use an exact version when reproducibility matters.
+## Automatic release on a version increase
 
-Before a release:
+`VERSION` is the release trigger. For this update it is **0.1.0**. Include an
+increased stable `MAJOR.MINOR.PATCH` value in the feature PR when a release is
+wanted, and update README, CHANGELOG, and the example's displayed version.
+Normal merges that leave VERSION unchanged run CI without publishing. Decreases,
+leading zeroes, malformed versions, and prerelease suffixes fail validation.
 
-1. Update CHANGELOG.md and all affected documentation/examples.
-2. Run `swift package resolve`, `swift build`, and `swift test` from a clean clone.
-3. Build Examples/AgentAtomDemo as documented in its README.
-4. Confirm macOS CI is green and a separate package resolves the proposed version.
-5. Review the published files and license/dependency notices.
-6. Tag the verified master commit and publish matching GitHub release notes.
-7. Confirm the remote tag resolves through Swift Package Manager.
+When the owner merges a version increase into main, CI automatically:
 
-`master` is read-only, including for administrators. Only the repository owner
-may temporarily unlock it to merge a reviewed update; restore the lock afterward.
-Never enable force pushes or deletion. Never move an existing release tag.
-The initial bootstrap publishes its first commit and verifies CI before tagging
-and enabling the permanent master lock. No outside collaborators receive write access.
+1. Builds the three Mac/iPhone XCFramework destinations with library evolution and @rpath,
+   using the same sources as AgentAtomSource, and records toolchain/source SHA.
+2. Runs the deterministic source suite, isolated public consumer tests for both
+   products, binary compilation across the shipped architectures, and demo build.
+3. Publishes the immutable binary asset in the prerelease `artifacts-VERSION`.
+   It includes the archive, SHA-256, source commit, toolchain, and license notices.
+4. Generates a release-only Package.swift with that public URL and checksum, and
+   tests both products again as separate consumers against the public download.
+5. Creates a generated manifest commit whose parent is the verified merged source,
+   tags it with VERSION, and publishes the matching GitHub Release as latest.
 
-ScriptMakerServer currently retains a separate local snapshot. This repository
-is the canonical source for future AgentAtom development. Synchronizing that
-snapshot or replacing it with a remote dependency is an explicit separate change.
+The workflow uses a job-scoped contents-write GitHub token for publication; PR
+jobs are read-only. It does not push a commit to main or unlock any protection.
+The tag includes the complete corresponding source and docs; only its manifest
+changes from its main parent. The asset tag is not a semantic SwiftPM version.
+
+Release tags/assets are never replaced. A retry can reuse the original binary
+only if its recorded source SHA matches, and can finish publishing a tag only if
+its parent and manifest match. Fixes need a new version once released. Inspect
+failed CI logs before rerunning. Workflow dispatch runs validation only.
+
+## Working from a development checkout
+
+The main/feature manifest references the locally built XCFramework. Run
+`Scripts/build-xcframework.sh` before SwiftPM resolution, source tests, or opening
+the demo from a checkout. Published semantic tags instead reference the remote
+archive, so package consumers do not build or stage a framework themselves.
+See [distribution guidance](Distribution/README.md) for local verification.
+
+Do not move the existing 0.0.1 tag: it remains source-only. ScriptMakerServer keeps
+its local snapshot until the separate dependency migration task is implemented.
